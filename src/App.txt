@@ -1,0 +1,97 @@
+
+import { useState } from "react";
+
+export default function App() {
+  const [number, setNumber] = useState("");
+  const [code, setCode] = useState("");
+  const [attempts, setAttempts] = useState(0);
+  const [locked, setLocked] = useState(false);
+  const [logs, setLogs] = useState(null);
+
+  const correctNumber = "+989123456789";
+  const correctCode = "091583";
+
+  const fakeLogs = [
+    { type: "call", from: "09125551234", duration: "02:13", tower: "Tehran-3G-21" },
+    { type: "sms", from: "09351234567", text: "کجا هستی؟", tower: "Shiraz-4G-02" },
+    { type: "sms", from: "09187776655", text: "یادت نره فردا بیا", tower: "Karaj-5G-07" },
+    { type: "call", from: "09223334444", duration: "00:45", tower: "Tabriz-3G-05" },
+  ];
+
+  function handleSubmit(e) {
+    e.preventDefault();
+    if (locked) return;
+
+    if (number === correctNumber && code === correctCode) {
+      setLogs(fakeLogs);
+    } else {
+      const newAttempts = attempts + 1;
+      setAttempts(newAttempts);
+      if (newAttempts >= 3) {
+        setLocked(true);
+      }
+      setLogs(null);
+    }
+  }
+
+  return (
+    <div className="min-h-screen bg-gray-900 flex flex-col items-center justify-center text-white">
+      <h1 className="text-3xl font-bold mb-6">📱 SMS Portal</h1>
+      <form
+        onSubmit={handleSubmit}
+        className="bg-gray-800 p-6 rounded-2xl shadow-md w-80"
+      >
+        <div className="mb-4">
+          <label className="block text-sm mb-1">شماره تلفن</label>
+          <input
+            type="text"
+            value={number}
+            onChange={(e) => setNumber(e.target.value)}
+            className="w-full px-3 py-2 rounded bg-gray-700 text-white"
+          />
+        </div>
+        <div className="mb-4">
+          <label className="block text-sm mb-1">کد دسترسی</label>
+          <input
+            type="password"
+            value={code}
+            onChange={(e) => setCode(e.target.value)}
+            className="w-full px-3 py-2 rounded bg-gray-700 text-white"
+          />
+        </div>
+        <button
+          type="submit"
+          className="w-full bg-blue-600 hover:bg-blue-500 py-2 rounded-xl"
+          disabled={locked}
+        >
+          ورود
+        </button>
+      </form>
+
+      {locked && (
+        <p className="text-red-400 mt-4">⛔ دسترسی قفل شد (۳ تلاش اشتباه)</p>
+      )}
+
+      {logs && (
+        <div className="mt-6 bg-gray-800 p-4 rounded-2xl shadow-md w-96">
+          <h2 className="text-xl font-semibold mb-3">📂 لاگ‌ها</h2>
+          <ul className="space-y-2">
+            {logs.map((log, i) => (
+              <li
+                key={i}
+                className="bg-gray-700 p-2 rounded flex justify-between"
+              >
+                <span>
+                  {log.type === "call" ? "📞 تماس" : "💬 پیامک"} از {log.from}
+                </span>
+                <span>
+                  {log.type === "call" ? log.duration : log.text} ({log.tower})
+                </span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+    </div>
+  );
+}
