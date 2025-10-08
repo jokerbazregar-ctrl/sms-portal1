@@ -15,7 +15,7 @@ const CONFIG = {
 };
 
 const CORRECT_PHONE = "09164568890";
-const CORRECT_CODE = "DSMKL56YUU"; // case-sensitive ✅
+const CORRECT_CODE = "SDMKL56YUU"; // case-sensitive ✅
 const MAX_ATTEMPTS = 3;
 
 export default function App() {
